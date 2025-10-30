@@ -5,6 +5,8 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { GraduationCap } from "lucide-react";
 
 const Auth = () => {
   const [isLoading, setIsLoading] = useState(false);
@@ -27,11 +29,19 @@ const Auth = () => {
     <div className="min-h-screen flex items-center justify-center p-4 bg-gradient-to-br from-background via-background to-muted">
       <div className="w-full max-w-md">
         <Link to="/" className="flex items-center justify-center gap-2 mb-8">
-          <div className="h-10 w-10 rounded-lg bg-gradient-primary" />
+          <div className="h-10 w-10 rounded-lg bg-gradient-primary flex items-center justify-center">
+            <GraduationCap className="h-6 w-6 text-primary-foreground" />
+          </div>
           <span className="text-3xl font-bold bg-gradient-primary bg-clip-text text-transparent">
             LinkX
           </span>
         </Link>
+
+        <div className="text-center mb-6">
+          <p className="text-sm text-muted-foreground">
+            Exclusive platform for college students
+          </p>
+        </div>
 
         <Tabs defaultValue="signin" className="w-full">
           <TabsList className="grid w-full grid-cols-2">
@@ -42,19 +52,19 @@ const Auth = () => {
           <TabsContent value="signin">
             <Card className="shadow-glow">
               <CardHeader>
-                <CardTitle>Welcome back</CardTitle>
+                <CardTitle>Welcome back, Student</CardTitle>
                 <CardDescription>
-                  Sign in to your account to continue
+                  Sign in with your college email to continue
                 </CardDescription>
               </CardHeader>
               <form onSubmit={handleSignIn}>
                 <CardContent className="space-y-4">
                   <div className="space-y-2">
-                    <Label htmlFor="email">Email</Label>
+                    <Label htmlFor="email">College Email</Label>
                     <Input 
                       id="email" 
                       type="email" 
-                      placeholder="name@example.com" 
+                      placeholder="student@college.edu" 
                       required
                     />
                   </div>
@@ -89,9 +99,9 @@ const Auth = () => {
           <TabsContent value="signup">
             <Card className="shadow-glow">
               <CardHeader>
-                <CardTitle>Create account</CardTitle>
+                <CardTitle>Create Student Account</CardTitle>
                 <CardDescription>
-                  Join LinkX to start building your professional network
+                  Join LinkX to discover internship opportunities
                 </CardDescription>
               </CardHeader>
               <form onSubmit={handleSignUp}>
@@ -115,13 +125,49 @@ const Auth = () => {
                     </div>
                   </div>
                   <div className="space-y-2">
-                    <Label htmlFor="signup-email">Email</Label>
+                    <Label htmlFor="signup-email">College Email</Label>
                     <Input 
                       id="signup-email" 
                       type="email" 
-                      placeholder="name@example.com" 
+                      placeholder="student@college.edu" 
                       required
                     />
+                    <p className="text-xs text-muted-foreground">
+                      Must be a valid .edu email address
+                    </p>
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="college">College Name</Label>
+                    <Input 
+                      id="college" 
+                      placeholder="Enter your college name" 
+                      required
+                    />
+                  </div>
+                  <div className="grid grid-cols-2 gap-4">
+                    <div className="space-y-2">
+                      <Label htmlFor="year">Year of Study</Label>
+                      <Select required>
+                        <SelectTrigger>
+                          <SelectValue placeholder="Select year" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="1">1st Year</SelectItem>
+                          <SelectItem value="2">2nd Year</SelectItem>
+                          <SelectItem value="3">3rd Year</SelectItem>
+                          <SelectItem value="4">4th Year</SelectItem>
+                          <SelectItem value="graduate">Graduate</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+                    <div className="space-y-2">
+                      <Label htmlFor="major">Major/Field</Label>
+                      <Input 
+                        id="major" 
+                        placeholder="Computer Science" 
+                        required
+                      />
+                    </div>
                   </div>
                   <div className="space-y-2">
                     <Label htmlFor="signup-password">Password</Label>
@@ -132,7 +178,7 @@ const Auth = () => {
                     />
                   </div>
                   <p className="text-xs text-muted-foreground">
-                    By signing up, you agree to our Terms of Service and Privacy Policy.
+                    By signing up, you agree to our Terms of Service and confirm you are a current college student.
                   </p>
                 </CardContent>
                 <CardFooter>
@@ -142,7 +188,7 @@ const Auth = () => {
                     className="w-full" 
                     disabled={isLoading}
                   >
-                    {isLoading ? "Creating account..." : "Create Account"}
+                    {isLoading ? "Creating account..." : "Create Student Account"}
                   </Button>
                 </CardFooter>
               </form>

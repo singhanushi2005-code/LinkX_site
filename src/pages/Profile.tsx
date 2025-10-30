@@ -8,37 +8,53 @@ import { MapPin, Briefcase, Calendar, Mail, Edit } from "lucide-react";
 const Profile = () => {
   // Mock data - will be replaced with real user data from Lovable Cloud
   const user = {
-    name: "John Doe",
-    title: "Senior Software Engineer",
-    location: "San Francisco, CA",
-    email: "john.doe@example.com",
-    joinDate: "Joined January 2023",
-    about: "Passionate software engineer with 8+ years of experience in building scalable web applications. Specialized in React, TypeScript, and cloud technologies. Always eager to learn and share knowledge with the community.",
+    name: "Alex Johnson",
+    title: "Computer Science Student • 3rd Year",
+    location: "MIT, Cambridge, MA",
+    email: "alex.johnson@college.edu",
+    joinDate: "Joined September 2024",
+    about: "Passionate computer science student with strong interest in full-stack development and AI. Active member of coding club and hackathon enthusiast. Looking for summer internship opportunities to apply my skills and learn from industry professionals.",
     experience: [
       {
-        title: "Senior Software Engineer",
-        company: "TechCorp",
-        period: "2021 - Present",
-        description: "Leading frontend development for enterprise SaaS products"
+        title: "Frontend Development Intern",
+        company: "TechStartup Inc.",
+        period: "Summer 2024",
+        description: "Built responsive web components using React and TypeScript. Collaborated with design team to implement new features."
       },
       {
-        title: "Software Engineer",
-        company: "StartupXYZ",
-        period: "2018 - 2021",
-        description: "Built and maintained multiple web applications using modern tech stack"
+        title: "Teaching Assistant - Data Structures",
+        company: "MIT Computer Science Department",
+        period: "Fall 2024 - Present",
+        description: "Assist professor in teaching data structures course. Hold office hours and grade assignments for 100+ students."
       }
     ],
     education: [
       {
         degree: "Bachelor of Science in Computer Science",
-        institution: "University of Technology",
-        year: "2018"
+        institution: "Massachusetts Institute of Technology",
+        year: "Expected 2026"
+      }
+    ],
+    projects: [
+      {
+        name: "E-Commerce Platform",
+        description: "Full-stack web app with React, Node.js, and MongoDB",
+        link: "github.com/alexj/ecommerce"
+      },
+      {
+        name: "AI Chatbot",
+        description: "NLP-powered chatbot using Python and TensorFlow",
+        link: "github.com/alexj/ai-chatbot"
       }
     ],
     skills: [
-      "React", "TypeScript", "Node.js", "Python", "AWS",
-      "Docker", "PostgreSQL", "GraphQL", "CI/CD", "Agile"
-    ]
+      "React", "TypeScript", "JavaScript", "Python", "Java",
+      "Node.js", "MongoDB", "Git", "REST APIs", "Machine Learning"
+    ],
+    gpa: "3.8/4.0",
+    college: "Massachusetts Institute of Technology",
+    major: "Computer Science",
+    year: "3rd Year"
   };
 
   return (
@@ -82,23 +98,27 @@ const Profile = () => {
                       {user.email}
                     </div>
                     <div className="flex items-center gap-1">
+                      <Briefcase className="h-4 w-4" />
+                      {user.major}
+                    </div>
+                    <div className="flex items-center gap-1">
                       <Calendar className="h-4 w-4" />
-                      {user.joinDate}
+                      {user.year}
                     </div>
                   </div>
 
                   <div className="flex gap-6 pt-4 border-t">
                     <div>
-                      <div className="text-2xl font-bold">342</div>
+                      <div className="text-2xl font-bold">156</div>
                       <div className="text-sm text-muted-foreground">Connections</div>
                     </div>
                     <div>
-                      <div className="text-2xl font-bold">1.2k</div>
-                      <div className="text-sm text-muted-foreground">Followers</div>
+                      <div className="text-2xl font-bold">{user.gpa}</div>
+                      <div className="text-sm text-muted-foreground">GPA</div>
                     </div>
                     <div>
-                      <div className="text-2xl font-bold">89</div>
-                      <div className="text-sm text-muted-foreground">Posts</div>
+                      <div className="text-2xl font-bold">3</div>
+                      <div className="text-sm text-muted-foreground">Projects</div>
                     </div>
                   </div>
                 </div>
@@ -151,6 +171,30 @@ const Profile = () => {
                     <h3 className="font-semibold">{edu.degree}</h3>
                     <p className="text-sm text-muted-foreground">{edu.institution}</p>
                     <p className="text-xs text-muted-foreground">{edu.year}</p>
+                    <p className="text-sm mt-1">GPA: <span className="font-semibold">{user.gpa}</span></p>
+                  </div>
+                ))}
+              </CardContent>
+            </Card>
+
+            {/* Projects */}
+            <Card className="shadow-soft">
+              <CardHeader>
+                <CardTitle>Projects</CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                {user.projects?.map((project, index) => (
+                  <div key={index} className="pb-4 border-b last:border-0 last:pb-0">
+                    <h3 className="font-semibold">{project.name}</h3>
+                    <p className="text-sm text-foreground mt-1">{project.description}</p>
+                    <a 
+                      href={`https://${project.link}`} 
+                      target="_blank" 
+                      rel="noopener noreferrer"
+                      className="text-sm text-primary hover:underline mt-1 inline-block"
+                    >
+                      {project.link}
+                    </a>
                   </div>
                 ))}
               </CardContent>

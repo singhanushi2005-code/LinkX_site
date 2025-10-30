@@ -11,45 +11,45 @@ const Feed = () => {
   const posts = [
     {
       author: {
-        name: "Sarah Johnson",
-        title: "Senior Software Engineer at TechCorp",
+        name: "Sarah Chen",
+        title: "CS Major • 4th Year • Stanford University",
         avatar: ""
       },
-      content: "Excited to share that I'll be speaking at the Tech Summit 2025! Looking forward to discussing the future of AI in software development. Who else is attending?",
+      content: "Just got an internship offer from Google! 🎉 All those leetcode problems and mock interviews finally paid off. Happy to share my preparation strategy with anyone who needs it. Never give up!",
       timestamp: "2 hours ago",
-      likes: 147,
-      comments: 23
+      likes: 247,
+      comments: 43
     },
     {
       author: {
-        name: "Michael Chen",
-        title: "Product Manager | Innovation Enthusiast",
+        name: "Michael Rodriguez",
+        title: "Business Major • 3rd Year • MIT",
         avatar: ""
       },
-      content: "Just launched our new product feature! Huge thanks to the amazing team who made this possible. Check it out and let me know what you think!",
+      content: "Attended an amazing workshop by the placement cell today on negotiating internship offers. Pro tip: Always ask about learning opportunities, not just compensation. Who else attended?",
       timestamp: "5 hours ago",
-      likes: 89,
-      comments: 15
+      likes: 156,
+      comments: 28
     },
     {
       author: {
-        name: "Emily Rodriguez",
-        title: "UX Designer | Design Systems Advocate",
+        name: "Emily Taylor",
+        title: "Design Major • 2nd Year • RISD",
         avatar: ""
       },
-      content: "Spent the weekend redesigning our design system. The key to great UX? Consistency, accessibility, and empathy. What are your design principles?",
+      content: "Working on my portfolio this weekend. Remember: Quality over quantity! 3-4 strong projects that show your process are better than 10 mediocre ones. What projects are you most proud of?",
       timestamp: "1 day ago",
-      likes: 234,
-      comments: 41
+      likes: 189,
+      comments: 35
     }
   ];
 
   const trendingTopics = [
-    "#AIRevolution",
-    "#RemoteWork",
-    "#Sustainability",
-    "#WebDevelopment",
-    "#CareerGrowth"
+    "#InternshipTips",
+    "#StudentLife",
+    "#TechCareers",
+    "#CampusRecruitment",
+    "#SkillDevelopment"
   ];
 
   return (
@@ -67,8 +67,8 @@ const Feed = () => {
                     <AvatarFallback className="text-2xl">JD</AvatarFallback>
                   </Avatar>
                   <div>
-                    <h3 className="font-semibold">John Doe</h3>
-                    <p className="text-sm text-muted-foreground">Software Engineer</p>
+                    <h3 className="font-semibold">Alex Johnson</h3>
+                    <p className="text-sm text-muted-foreground">CS Major • 3rd Year • MIT</p>
                   </div>
                   <div className="w-full pt-4 border-t space-y-2 text-sm">
                     <div className="flex justify-between">

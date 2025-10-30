@@ -1,41 +1,41 @@
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { Users, Briefcase, MessageSquare, TrendingUp, Shield, Zap } from "lucide-react";
+import { GraduationCap, Briefcase, MessageSquare, TrendingUp, Shield, Zap } from "lucide-react";
 import heroImage from "@/assets/hero-network.jpg";
 import Header from "@/components/Header";
 
 const Landing = () => {
   const features = [
     {
-      icon: Users,
-      title: "Connect Globally",
-      description: "Build meaningful professional relationships across industries and borders"
+      icon: GraduationCap,
+      title: "Connect with Placement Cell",
+      description: "Direct communication with your college placement office for guidance and opportunities"
     },
     {
       icon: Briefcase,
-      title: "Find Opportunities",
-      description: "Discover jobs, projects, and career advancement opportunities"
-    },
-    {
-      icon: MessageSquare,
-      title: "Engage & Share",
-      description: "Share insights, join discussions, and learn from industry leaders"
+      title: "Find Internships",
+      description: "Discover internship opportunities matched to your skills and academic background"
     },
     {
       icon: TrendingUp,
-      title: "Grow Your Career",
-      description: "Access resources and tools to accelerate your professional growth"
+      title: "Showcase Your Skills",
+      description: "Build your profile highlighting projects, skills, and achievements to stand out"
+    },
+    {
+      icon: MessageSquare,
+      title: "Network with Peers",
+      description: "Connect with fellow students, share experiences, and learn from each other"
     },
     {
       icon: Shield,
-      title: "Secure Platform",
-      description: "Your data and privacy are protected with enterprise-grade security"
+      title: "Student-Verified Platform",
+      description: "Exclusive community for verified college students ensuring authentic connections"
     },
     {
       icon: Zap,
-      title: "Real-time Updates",
-      description: "Stay connected with instant notifications and live interactions"
+      title: "Quick Applications",
+      description: "Apply to multiple internships with one profile - no repeated form filling"
     }
   ];
 
@@ -49,46 +49,51 @@ const Landing = () => {
         <div className="container mx-auto px-4 py-20 relative">
           <div className="grid lg:grid-cols-2 gap-12 items-center">
             <div className="space-y-6 animate-slide-up">
+              <div className="inline-block">
+                <span className="bg-gradient-primary text-primary-foreground px-4 py-2 rounded-full text-sm font-semibold">
+                  For College Students Only
+                </span>
+              </div>
               <h1 className="text-5xl lg:text-6xl font-bold leading-tight">
-                Welcome to the Professional{" "}
+                Your Skills,{" "}
                 <span className="bg-gradient-primary bg-clip-text text-transparent">
-                  Network
+                  Your Future
                 </span>
               </h1>
               <p className="text-xl text-muted-foreground">
-                Connect with professionals, discover opportunities, and grow your career with LinkX - 
-                the modern platform for meaningful professional connections.
+                Connect with your college placement cell, showcase your skills, 
+                and discover internship opportunities designed for students like you.
               </p>
               <div className="flex gap-4">
                 <Link to="/auth">
                   <Button variant="hero" size="lg" className="text-lg px-8">
-                    Get Started
+                    Join as Student
                   </Button>
                 </Link>
                 <Link to="/feed">
                   <Button variant="outline" size="lg" className="text-lg px-8">
-                    Explore
+                    Explore Platform
                   </Button>
                 </Link>
               </div>
               <div className="flex gap-8 pt-4">
                 <div>
                   <div className="text-3xl font-bold bg-gradient-primary bg-clip-text text-transparent">
-                    10M+
+                    50K+
                   </div>
-                  <div className="text-sm text-muted-foreground">Active Users</div>
+                  <div className="text-sm text-muted-foreground">Active Students</div>
                 </div>
                 <div>
                   <div className="text-3xl font-bold bg-gradient-primary bg-clip-text text-transparent">
-                    500K+
+                    500+
                   </div>
-                  <div className="text-sm text-muted-foreground">Companies</div>
+                  <div className="text-sm text-muted-foreground">Colleges</div>
                 </div>
                 <div>
                   <div className="text-3xl font-bold bg-gradient-primary bg-clip-text text-transparent">
-                    1M+
+                    10K+
                   </div>
-                  <div className="text-sm text-muted-foreground">Jobs Posted</div>
+                  <div className="text-sm text-muted-foreground">Internships</div>
                 </div>
               </div>
             </div>
@@ -97,7 +102,7 @@ const Landing = () => {
               <div className="absolute -inset-4 bg-gradient-primary opacity-20 blur-3xl rounded-full animate-float" />
               <img 
                 src={heroImage} 
-                alt="Professional networking" 
+                alt="College students collaborating" 
                 className="rounded-2xl shadow-glow relative z-10"
               />
             </div>
@@ -109,10 +114,11 @@ const Landing = () => {
       <section className="container mx-auto px-4 py-20">
         <div className="text-center mb-12">
           <h2 className="text-4xl font-bold mb-4">
-            Why Choose <span className="bg-gradient-primary bg-clip-text text-transparent">LinkX</span>?
+            Everything You Need for Your{" "}
+            <span className="bg-gradient-primary bg-clip-text text-transparent">Career Journey</span>
           </h2>
           <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
-            Everything you need to build and grow your professional network in one powerful platform
+            From connecting with placement cells to landing your dream internship - all in one platform
           </p>
         </div>
         
@@ -131,18 +137,66 @@ const Landing = () => {
         </div>
       </section>
 
+      {/* How It Works */}
+      <section className="bg-muted/30 py-20">
+        <div className="container mx-auto px-4">
+          <div className="text-center mb-12">
+            <h2 className="text-4xl font-bold mb-4">How LinkX Works</h2>
+            <p className="text-xl text-muted-foreground">Simple steps to launch your career</p>
+          </div>
+          
+          <div className="grid md:grid-cols-3 gap-8 max-w-5xl mx-auto">
+            <Card className="shadow-soft text-center">
+              <CardContent className="p-8">
+                <div className="h-16 w-16 rounded-full bg-gradient-primary text-primary-foreground text-2xl font-bold flex items-center justify-center mx-auto mb-4">
+                  1
+                </div>
+                <h3 className="text-xl font-semibold mb-3">Create Your Profile</h3>
+                <p className="text-muted-foreground">
+                  Sign up with your college email and showcase your skills, projects, and achievements
+                </p>
+              </CardContent>
+            </Card>
+            
+            <Card className="shadow-soft text-center">
+              <CardContent className="p-8">
+                <div className="h-16 w-16 rounded-full bg-gradient-primary text-primary-foreground text-2xl font-bold flex items-center justify-center mx-auto mb-4">
+                  2
+                </div>
+                <h3 className="text-xl font-semibold mb-3">Connect & Explore</h3>
+                <p className="text-muted-foreground">
+                  Link with your placement cell and browse internships tailored to your field
+                </p>
+              </CardContent>
+            </Card>
+            
+            <Card className="shadow-soft text-center">
+              <CardContent className="p-8">
+                <div className="h-16 w-16 rounded-full bg-gradient-primary text-primary-foreground text-2xl font-bold flex items-center justify-center mx-auto mb-4">
+                  3
+                </div>
+                <h3 className="text-xl font-semibold mb-3">Apply & Succeed</h3>
+                <p className="text-muted-foreground">
+                  Apply with one click, get placement cell support, and land your dream internship
+                </p>
+              </CardContent>
+            </Card>
+          </div>
+        </div>
+      </section>
+
       {/* CTA Section */}
       <section className="bg-gradient-primary py-20">
         <div className="container mx-auto px-4 text-center">
           <h2 className="text-4xl font-bold text-primary-foreground mb-4">
-            Ready to Advance Your Career?
+            Ready to Start Your Career Journey?
           </h2>
           <p className="text-xl text-primary-foreground/90 mb-8 max-w-2xl mx-auto">
-            Join millions of professionals already building their future on LinkX
+            Join thousands of students already using LinkX to discover internships and build their careers
           </p>
           <Link to="/auth">
             <Button variant="secondary" size="lg" className="text-lg px-8">
-              Join LinkX Today
+              Sign Up with College Email
             </Button>
           </Link>
         </div>
@@ -158,36 +212,36 @@ const Landing = () => {
                 <span className="text-xl font-bold">LinkX</span>
               </div>
               <p className="text-sm text-muted-foreground">
-                The modern professional networking platform
+                The student internship platform connecting you with opportunities
               </p>
             </div>
             <div>
-              <h4 className="font-semibold mb-4">Product</h4>
+              <h4 className="font-semibold mb-4">For Students</h4>
               <div className="space-y-2 text-sm text-muted-foreground">
-                <div>Features</div>
-                <div>Pricing</div>
-                <div>Security</div>
+                <div>Find Internships</div>
+                <div>Build Profile</div>
+                <div>Connect with Peers</div>
               </div>
             </div>
             <div>
-              <h4 className="font-semibold mb-4">Company</h4>
+              <h4 className="font-semibold mb-4">Resources</h4>
               <div className="space-y-2 text-sm text-muted-foreground">
-                <div>About</div>
-                <div>Careers</div>
-                <div>Contact</div>
+                <div>Career Guide</div>
+                <div>Resume Tips</div>
+                <div>Interview Prep</div>
               </div>
             </div>
             <div>
-              <h4 className="font-semibold mb-4">Legal</h4>
+              <h4 className="font-semibold mb-4">Support</h4>
               <div className="space-y-2 text-sm text-muted-foreground">
-                <div>Privacy</div>
-                <div>Terms</div>
-                <div>Cookies</div>
+                <div>Help Center</div>
+                <div>Contact Us</div>
+                <div>FAQs</div>
               </div>
             </div>
           </div>
           <div className="border-t mt-8 pt-8 text-center text-sm text-muted-foreground">
-            © 2025 LinkX. All rights reserved.
+            © 2025 LinkX. Empowering college students to build their future.
           </div>
         </div>
       </footer>

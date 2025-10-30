@@ -2,7 +2,7 @@ import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Search, Home, Briefcase, Users, MessageSquare, Bell, User } from "lucide-react";
+import { Search, Home, Briefcase, Users, MessageSquare, Bell, User, GraduationCap } from "lucide-react";
 
 const Header = () => {
   const [searchQuery, setSearchQuery] = useState("");
@@ -57,9 +57,14 @@ const Header = () => {
                   <Users className="h-5 w-5" />
                 </Button>
               </Link>
-              <Link to="/jobs">
+              <Link to="/internships">
                 <Button variant="ghost" size="icon" className="rounded-full">
                   <Briefcase className="h-5 w-5" />
+                </Button>
+              </Link>
+              <Link to="/placement-cell">
+                <Button variant="ghost" size="icon" className="rounded-full">
+                  <GraduationCap className="h-5 w-5" />
                 </Button>
               </Link>
               <Link to="/messages">

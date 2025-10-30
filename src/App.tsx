@@ -8,7 +8,8 @@ import Auth from "./pages/Auth";
 import Feed from "./pages/Feed";
 import Profile from "./pages/Profile";
 import Connections from "./pages/Connections";
-import Jobs from "./pages/Jobs";
+import Internships from "./pages/Internships";
+import PlacementCell from "./pages/PlacementCell";
 import Messages from "./pages/Messages";
 import NotFound from "./pages/NotFound";
 
@@ -26,7 +27,8 @@ const App = () => (
           <Route path="/feed" element={<Feed />} />
           <Route path="/profile" element={<Profile />} />
           <Route path="/connections" element={<Connections />} />
-          <Route path="/jobs" element={<Jobs />} />
+          <Route path="/internships" element={<Internships />} />
+          <Route path="/placement-cell" element={<PlacementCell />} />
           <Route path="/messages" element={<Messages />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
