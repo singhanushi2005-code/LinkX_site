@@ -1,5 +1,5 @@
-import { useState } from "react";
-import { Link } from "react-router-dom";
+import { useState, useEffect } from "react";
+import { Link, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -7,22 +7,98 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { GraduationCap } from "lucide-react";
+import { supabase } from "@/integrations/supabase/client";
+import { toast } from "sonner";
 
 const Auth = () => {
   const [isLoading, setIsLoading] = useState(false);
+  const [yearValue, setYearValue] = useState("");
+  const navigate = useNavigate();
+
+  // Check if user is already authenticated
+  useEffect(() => {
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      if (session) {
+        navigate("/feed");
+      }
+    });
+
+    const {
+      data: { subscription },
+    } = supabase.auth.onAuthStateChange((_event, session) => {
+      if (session) {
+        navigate("/feed");
+      }
+    });
+
+    return () => subscription.unsubscribe();
+  }, [navigate]);
 
   const handleSignIn = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
-    // Auth logic will be implemented with Lovable Cloud
-    setTimeout(() => setIsLoading(false), 1000);
+
+    const form = e.target as HTMLFormElement;
+    const email = (form.elements.namedItem("email") as HTMLInputElement).value;
+    const password = (form.elements.namedItem("password") as HTMLInputElement).value;
+
+    try {
+      const { error } = await supabase.auth.signInWithPassword({
+        email,
+        password,
+      });
+
+      if (error) throw error;
+      
+      toast.success("Welcome back!");
+    } catch (error: any) {
+      toast.error(error.message || "Failed to sign in");
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   const handleSignUp = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
-    // Auth logic will be implemented with Lovable Cloud
-    setTimeout(() => setIsLoading(false), 1000);
+
+    const form = e.target as HTMLFormElement;
+    const email = (form.elements.namedItem("signup-email") as HTMLInputElement).value;
+    const password = (form.elements.namedItem("signup-password") as HTMLInputElement).value;
+    const firstName = (form.elements.namedItem("firstname") as HTMLInputElement).value;
+    const lastName = (form.elements.namedItem("lastname") as HTMLInputElement).value;
+    const college = (form.elements.namedItem("college") as HTMLInputElement).value;
+    const major = (form.elements.namedItem("major") as HTMLInputElement).value;
+
+    if (!yearValue) {
+      toast.error("Please select your year of study");
+      setIsLoading(false);
+      return;
+    }
+
+    try {
+      const { error } = await supabase.auth.signUp({
+        email,
+        password,
+        options: {
+          data: {
+            first_name: firstName,
+            last_name: lastName,
+            college,
+            year: parseInt(yearValue),
+            major,
+          },
+        },
+      });
+
+      if (error) throw error;
+      
+      toast.success("Account created successfully! Welcome to LinkX!");
+    } catch (error: any) {
+      toast.error(error.message || "Failed to create account");
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
@@ -62,7 +138,8 @@ const Auth = () => {
                   <div className="space-y-2">
                     <Label htmlFor="email">College Email</Label>
                     <Input 
-                      id="email" 
+                      id="email"
+                      name="email"
                       type="email" 
                       placeholder="student@college.edu" 
                       required
@@ -71,7 +148,8 @@ const Auth = () => {
                   <div className="space-y-2">
                     <Label htmlFor="password">Password</Label>
                     <Input 
-                      id="password" 
+                      id="password"
+                      name="password"
                       type="password" 
                       required
                     />
@@ -110,7 +188,8 @@ const Auth = () => {
                     <div className="space-y-2">
                       <Label htmlFor="firstname">First Name</Label>
                       <Input 
-                        id="firstname" 
+                        id="firstname"
+                        name="firstname"
                         placeholder="John" 
                         required
                       />
@@ -118,7 +197,8 @@ const Auth = () => {
                     <div className="space-y-2">
                       <Label htmlFor="lastname">Last Name</Label>
                       <Input 
-                        id="lastname" 
+                        id="lastname"
+                        name="lastname"
                         placeholder="Doe" 
                         required
                       />
@@ -127,7 +207,8 @@ const Auth = () => {
                   <div className="space-y-2">
                     <Label htmlFor="signup-email">College Email</Label>
                     <Input 
-                      id="signup-email" 
+                      id="signup-email"
+                      name="signup-email"
                       type="email" 
                       placeholder="student@college.edu" 
                       required
@@ -139,7 +220,8 @@ const Auth = () => {
                   <div className="space-y-2">
                     <Label htmlFor="college">College Name</Label>
                     <Input 
-                      id="college" 
+                      id="college"
+                      name="college"
                       placeholder="Enter your college name" 
                       required
                     />
@@ -147,7 +229,7 @@ const Auth = () => {
                   <div className="grid grid-cols-2 gap-4">
                     <div className="space-y-2">
                       <Label htmlFor="year">Year of Study</Label>
-                      <Select required>
+                      <Select value={yearValue} onValueChange={setYearValue} required>
                         <SelectTrigger>
                           <SelectValue placeholder="Select year" />
                         </SelectTrigger>
@@ -156,14 +238,15 @@ const Auth = () => {
                           <SelectItem value="2">2nd Year</SelectItem>
                           <SelectItem value="3">3rd Year</SelectItem>
                           <SelectItem value="4">4th Year</SelectItem>
-                          <SelectItem value="graduate">Graduate</SelectItem>
+                          <SelectItem value="5">Graduate</SelectItem>
                         </SelectContent>
                       </Select>
                     </div>
                     <div className="space-y-2">
                       <Label htmlFor="major">Major/Field</Label>
                       <Input 
-                        id="major" 
+                        id="major"
+                        name="major"
                         placeholder="Computer Science" 
                         required
                       />
@@ -172,8 +255,10 @@ const Auth = () => {
                   <div className="space-y-2">
                     <Label htmlFor="signup-password">Password</Label>
                     <Input 
-                      id="signup-password" 
-                      type="password" 
+                      id="signup-password"
+                      name="signup-password"
+                      type="password"
+                      minLength={6}
                       required
                     />
                   </div>
