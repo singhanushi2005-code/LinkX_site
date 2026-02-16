@@ -1,69 +1,104 @@
+import { useState, useEffect } from "react";
 import Header from "@/components/Header";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Avatar, AvatarFallback } from "@/components/ui/avatar";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { MapPin, Briefcase, Calendar, Mail, Edit } from "lucide-react";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+import { Label } from "@/components/ui/label";
+import { useAuth } from "@/hooks/useAuth";
+import { supabase } from "@/integrations/supabase/client";
+import { toast } from "sonner";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
 
 const Profile = () => {
-  // Mock data - will be replaced with real user data from Lovable Cloud
-  const user = {
-    name: "Alex Johnson",
-    title: "Computer Science Student • 3rd Year",
-    location: "MIT, Cambridge, MA",
-    email: "alex.johnson@college.edu",
-    joinDate: "Joined September 2024",
-    about: "Passionate computer science student with strong interest in full-stack development and AI. Active member of coding club and hackathon enthusiast. Looking for summer internship opportunities to apply my skills and learn from industry professionals.",
-    experience: [
-      {
-        title: "Frontend Development Intern",
-        company: "TechStartup Inc.",
-        period: "Summer 2024",
-        description: "Built responsive web components using React and TypeScript. Collaborated with design team to implement new features."
-      },
-      {
-        title: "Teaching Assistant - Data Structures",
-        company: "MIT Computer Science Department",
-        period: "Fall 2024 - Present",
-        description: "Assist professor in teaching data structures course. Hold office hours and grade assignments for 100+ students."
-      }
-    ],
-    education: [
-      {
-        degree: "Bachelor of Science in Computer Science",
-        institution: "Massachusetts Institute of Technology",
-        year: "Expected 2026"
-      }
-    ],
-    projects: [
-      {
-        name: "E-Commerce Platform",
-        description: "Full-stack web app with React, Node.js, and MongoDB",
-        link: "github.com/alexj/ecommerce"
-      },
-      {
-        name: "AI Chatbot",
-        description: "NLP-powered chatbot using Python and TensorFlow",
-        link: "github.com/alexj/ai-chatbot"
-      }
-    ],
-    skills: [
-      "React", "TypeScript", "JavaScript", "Python", "Java",
-      "Node.js", "MongoDB", "Git", "REST APIs", "Machine Learning"
-    ],
-    gpa: "3.8/4.0",
-    college: "Massachusetts Institute of Technology",
-    major: "Computer Science",
-    year: "3rd Year"
+  const { user, profile, refreshProfile } = useAuth();
+  const [editing, setEditing] = useState(false);
+  const [connectionsCount, setConnectionsCount] = useState(0);
+  const [formData, setFormData] = useState({
+    first_name: "",
+    last_name: "",
+    bio: "",
+    skills: "",
+    gpa: "",
+    linkedin_url: "",
+    github_url: "",
+    portfolio_url: "",
+  });
+
+  useEffect(() => {
+    if (profile) {
+      setFormData({
+        first_name: profile.first_name || "",
+        last_name: profile.last_name || "",
+        bio: profile.bio || "",
+        skills: (profile.skills || []).join(", "),
+        gpa: profile.gpa?.toString() || "",
+        linkedin_url: profile.linkedin_url || "",
+        github_url: profile.github_url || "",
+        portfolio_url: profile.portfolio_url || "",
+      });
+    }
+    if (user) {
+      supabase
+        .from("connections")
+        .select("id", { count: "exact", head: true })
+        .or(`requester_id.eq.${user.id},recipient_id.eq.${user.id}`)
+        .eq("status", "accepted")
+        .then(({ count }) => setConnectionsCount(count || 0));
+    }
+  }, [profile, user]);
+
+  const handleSave = async () => {
+    if (!user) return;
+    const { error } = await supabase
+      .from("profiles")
+      .update({
+        first_name: formData.first_name,
+        last_name: formData.last_name,
+        bio: formData.bio,
+        skills: formData.skills.split(",").map((s) => s.trim()).filter(Boolean),
+        gpa: formData.gpa ? parseFloat(formData.gpa) : null,
+        linkedin_url: formData.linkedin_url || null,
+        github_url: formData.github_url || null,
+        portfolio_url: formData.portfolio_url || null,
+      })
+      .eq("id", user.id);
+
+    if (error) {
+      toast.error("Failed to update profile");
+    } else {
+      toast.success("Profile updated!");
+      setEditing(false);
+      refreshProfile();
+    }
   };
+
+  if (!profile) {
+    return (
+      <div className="min-h-screen bg-background">
+        <Header />
+        <div className="flex items-center justify-center py-20 text-muted-foreground">Loading profile...</div>
+      </div>
+    );
+  }
+
+  const fullName = `${profile.first_name || ""} ${profile.last_name || ""}`.trim() || "Student";
+  const initials = `${(profile.first_name || "?")[0]}${(profile.last_name || "")[0] || ""}`;
 
   return (
     <div className="min-h-screen bg-background">
       <Header />
-      
       <div className="container mx-auto px-4 py-6">
         <div className="grid lg:grid-cols-12 gap-6">
-          {/* Main Profile */}
           <div className="lg:col-span-8 space-y-6">
             {/* Profile Header */}
             <Card className="shadow-soft">
@@ -72,173 +107,145 @@ const Profile = () => {
                 <div className="px-6 pb-6">
                   <div className="flex flex-col sm:flex-row gap-4 -mt-16 mb-4">
                     <Avatar className="h-32 w-32 border-4 border-card">
-                      <AvatarFallback className="text-4xl">JD</AvatarFallback>
+                      <AvatarImage src={profile.avatar_url || ""} />
+                      <AvatarFallback className="text-4xl">{initials}</AvatarFallback>
                     </Avatar>
                     <div className="flex-1 mt-16 sm:mt-20">
                       <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4">
                         <div>
-                          <h1 className="text-3xl font-bold">{user.name}</h1>
-                          <p className="text-lg text-muted-foreground">{user.title}</p>
+                          <h1 className="text-3xl font-bold">{fullName}</h1>
+                          <p className="text-lg text-muted-foreground">
+                            {profile.major} • Year {profile.year}
+                          </p>
                         </div>
-                        <Button variant="outline">
-                          <Edit className="h-4 w-4 mr-2" />
-                          Edit Profile
-                        </Button>
+                        <Dialog open={editing} onOpenChange={setEditing}>
+                          <DialogTrigger asChild>
+                            <Button variant="outline">
+                              <Edit className="h-4 w-4 mr-2" />
+                              Edit Profile
+                            </Button>
+                          </DialogTrigger>
+                          <DialogContent className="max-w-lg max-h-[80vh] overflow-y-auto">
+                            <DialogHeader>
+                              <DialogTitle>Edit Profile</DialogTitle>
+                            </DialogHeader>
+                            <div className="space-y-4 py-4">
+                              <div className="grid grid-cols-2 gap-4">
+                                <div className="space-y-2">
+                                  <Label>First Name</Label>
+                                  <Input value={formData.first_name} onChange={(e) => setFormData({ ...formData, first_name: e.target.value })} />
+                                </div>
+                                <div className="space-y-2">
+                                  <Label>Last Name</Label>
+                                  <Input value={formData.last_name} onChange={(e) => setFormData({ ...formData, last_name: e.target.value })} />
+                                </div>
+                              </div>
+                              <div className="space-y-2">
+                                <Label>Bio</Label>
+                                <Textarea value={formData.bio} onChange={(e) => setFormData({ ...formData, bio: e.target.value })} />
+                              </div>
+                              <div className="space-y-2">
+                                <Label>Skills (comma-separated)</Label>
+                                <Input value={formData.skills} onChange={(e) => setFormData({ ...formData, skills: e.target.value })} placeholder="React, Python, SQL" />
+                              </div>
+                              <div className="space-y-2">
+                                <Label>GPA</Label>
+                                <Input value={formData.gpa} onChange={(e) => setFormData({ ...formData, gpa: e.target.value })} type="number" step="0.1" max="4.0" />
+                              </div>
+                              <div className="space-y-2">
+                                <Label>LinkedIn URL</Label>
+                                <Input value={formData.linkedin_url} onChange={(e) => setFormData({ ...formData, linkedin_url: e.target.value })} />
+                              </div>
+                              <div className="space-y-2">
+                                <Label>GitHub URL</Label>
+                                <Input value={formData.github_url} onChange={(e) => setFormData({ ...formData, github_url: e.target.value })} />
+                              </div>
+                              <div className="space-y-2">
+                                <Label>Portfolio URL</Label>
+                                <Input value={formData.portfolio_url} onChange={(e) => setFormData({ ...formData, portfolio_url: e.target.value })} />
+                              </div>
+                              <Button variant="hero" className="w-full" onClick={handleSave}>Save Changes</Button>
+                            </div>
+                          </DialogContent>
+                        </Dialog>
                       </div>
                     </div>
                   </div>
-                  
                   <div className="flex flex-wrap gap-4 text-sm text-muted-foreground mb-4">
                     <div className="flex items-center gap-1">
                       <MapPin className="h-4 w-4" />
-                      {user.location}
+                      {profile.college}
                     </div>
                     <div className="flex items-center gap-1">
                       <Mail className="h-4 w-4" />
-                      {user.email}
+                      {profile.email}
                     </div>
                     <div className="flex items-center gap-1">
                       <Briefcase className="h-4 w-4" />
-                      {user.major}
+                      {profile.major}
                     </div>
                     <div className="flex items-center gap-1">
                       <Calendar className="h-4 w-4" />
-                      {user.year}
+                      Year {profile.year}
                     </div>
                   </div>
-
                   <div className="flex gap-6 pt-4 border-t">
                     <div>
-                      <div className="text-2xl font-bold">156</div>
+                      <div className="text-2xl font-bold">{connectionsCount}</div>
                       <div className="text-sm text-muted-foreground">Connections</div>
                     </div>
-                    <div>
-                      <div className="text-2xl font-bold">{user.gpa}</div>
-                      <div className="text-sm text-muted-foreground">GPA</div>
-                    </div>
-                    <div>
-                      <div className="text-2xl font-bold">3</div>
-                      <div className="text-sm text-muted-foreground">Projects</div>
-                    </div>
+                    {profile.gpa && (
+                      <div>
+                        <div className="text-2xl font-bold">{profile.gpa}/4.0</div>
+                        <div className="text-sm text-muted-foreground">GPA</div>
+                      </div>
+                    )}
                   </div>
                 </div>
               </CardContent>
             </Card>
 
             {/* About */}
-            <Card className="shadow-soft">
-              <CardHeader>
-                <CardTitle>About</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <p className="text-foreground">{user.about}</p>
-              </CardContent>
-            </Card>
-
-            {/* Experience */}
-            <Card className="shadow-soft">
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <Briefcase className="h-5 w-5 text-primary" />
-                  Experience
-                </CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-6">
-                {user.experience.map((exp, index) => (
-                  <div key={index} className="flex gap-4">
-                    <div className="h-12 w-12 rounded-lg bg-gradient-primary flex items-center justify-center flex-shrink-0">
-                      <Briefcase className="h-6 w-6 text-primary-foreground" />
-                    </div>
-                    <div className="flex-1">
-                      <h3 className="font-semibold">{exp.title}</h3>
-                      <p className="text-sm text-muted-foreground">{exp.company}</p>
-                      <p className="text-xs text-muted-foreground">{exp.period}</p>
-                      <p className="text-sm mt-2">{exp.description}</p>
-                    </div>
-                  </div>
-                ))}
-              </CardContent>
-            </Card>
-
-            {/* Education */}
-            <Card className="shadow-soft">
-              <CardHeader>
-                <CardTitle>Education</CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                {user.education.map((edu, index) => (
-                  <div key={index}>
-                    <h3 className="font-semibold">{edu.degree}</h3>
-                    <p className="text-sm text-muted-foreground">{edu.institution}</p>
-                    <p className="text-xs text-muted-foreground">{edu.year}</p>
-                    <p className="text-sm mt-1">GPA: <span className="font-semibold">{user.gpa}</span></p>
-                  </div>
-                ))}
-              </CardContent>
-            </Card>
-
-            {/* Projects */}
-            <Card className="shadow-soft">
-              <CardHeader>
-                <CardTitle>Projects</CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                {user.projects?.map((project, index) => (
-                  <div key={index} className="pb-4 border-b last:border-0 last:pb-0">
-                    <h3 className="font-semibold">{project.name}</h3>
-                    <p className="text-sm text-foreground mt-1">{project.description}</p>
-                    <a 
-                      href={`https://${project.link}`} 
-                      target="_blank" 
-                      rel="noopener noreferrer"
-                      className="text-sm text-primary hover:underline mt-1 inline-block"
-                    >
-                      {project.link}
-                    </a>
-                  </div>
-                ))}
-              </CardContent>
-            </Card>
+            {profile.bio && (
+              <Card className="shadow-soft">
+                <CardHeader><CardTitle>About</CardTitle></CardHeader>
+                <CardContent><p className="text-foreground">{profile.bio}</p></CardContent>
+              </Card>
+            )}
           </div>
 
           {/* Sidebar */}
           <aside className="lg:col-span-4 space-y-6">
-            {/* Skills */}
             <Card className="shadow-soft">
-              <CardHeader>
-                <CardTitle>Skills</CardTitle>
-              </CardHeader>
+              <CardHeader><CardTitle>Skills</CardTitle></CardHeader>
               <CardContent>
                 <div className="flex flex-wrap gap-2">
-                  {user.skills.map((skill, index) => (
-                    <Badge key={index} variant="secondary">
-                      {skill}
-                    </Badge>
+                  {(profile.skills || []).map((skill: string, index: number) => (
+                    <Badge key={index} variant="secondary">{skill}</Badge>
                   ))}
+                  {(!profile.skills || profile.skills.length === 0) && (
+                    <p className="text-sm text-muted-foreground">No skills added yet. Edit your profile to add skills.</p>
+                  )}
                 </div>
               </CardContent>
             </Card>
 
-            {/* Analytics */}
-            <Card className="shadow-soft">
-              <CardHeader>
-                <CardTitle>Profile Analytics</CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                <div className="flex justify-between items-center">
-                  <span className="text-sm text-muted-foreground">Profile views</span>
-                  <span className="text-2xl font-bold">1,234</span>
-                </div>
-                <div className="flex justify-between items-center">
-                  <span className="text-sm text-muted-foreground">Search appearances</span>
-                  <span className="text-2xl font-bold">567</span>
-                </div>
-                <div className="flex justify-between items-center">
-                  <span className="text-sm text-muted-foreground">Post impressions</span>
-                  <span className="text-2xl font-bold">8,901</span>
-                </div>
-              </CardContent>
-            </Card>
+            {(profile.linkedin_url || profile.github_url || profile.portfolio_url) && (
+              <Card className="shadow-soft">
+                <CardHeader><CardTitle>Links</CardTitle></CardHeader>
+                <CardContent className="space-y-2">
+                  {profile.linkedin_url && (
+                    <a href={profile.linkedin_url} target="_blank" rel="noopener noreferrer" className="text-sm text-primary hover:underline block">LinkedIn</a>
+                  )}
+                  {profile.github_url && (
+                    <a href={profile.github_url} target="_blank" rel="noopener noreferrer" className="text-sm text-primary hover:underline block">GitHub</a>
+                  )}
+                  {profile.portfolio_url && (
+                    <a href={profile.portfolio_url} target="_blank" rel="noopener noreferrer" className="text-sm text-primary hover:underline block">Portfolio</a>
+                  )}
+                </CardContent>
+              </Card>
+            )}
           </aside>
         </div>
       </div>

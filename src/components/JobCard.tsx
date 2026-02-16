@@ -12,9 +12,10 @@ interface JobCardProps {
   posted: string;
   description: string;
   skills: string[];
+  onApply?: () => void;
 }
 
-const JobCard = ({ title, company, location, type, salary, posted, description, skills }: JobCardProps) => {
+const JobCard = ({ title, company, location, type, salary, posted, description, skills, onApply }: JobCardProps) => {
   return (
     <Card className="shadow-soft hover:shadow-glow transition-smooth">
       <CardHeader>
@@ -28,7 +29,7 @@ const JobCard = ({ title, company, location, type, salary, posted, description, 
           </div>
         </div>
       </CardHeader>
-      
+
       <CardContent className="space-y-4">
         <div className="flex flex-wrap gap-3 text-sm text-muted-foreground">
           <div className="flex items-center gap-1">
@@ -46,9 +47,9 @@ const JobCard = ({ title, company, location, type, salary, posted, description, 
             </div>
           )}
         </div>
-        
+
         <p className="text-foreground">{description}</p>
-        
+
         <div className="flex flex-wrap gap-2">
           {skills.map((skill, index) => (
             <Badge key={index} variant="secondary">
@@ -56,13 +57,17 @@ const JobCard = ({ title, company, location, type, salary, posted, description, 
             </Badge>
           ))}
         </div>
-        
+
         <p className="text-xs text-muted-foreground">{posted}</p>
       </CardContent>
-      
+
       <CardFooter className="gap-2">
-        <Button variant="hero" className="flex-1">Apply Now</Button>
-        <Button variant="outline" className="flex-1">Save</Button>
+        <Button variant="hero" className="flex-1" onClick={onApply}>
+          Apply Now
+        </Button>
+        <Button variant="outline" className="flex-1">
+          Save
+        </Button>
       </CardFooter>
     </Card>
   );
