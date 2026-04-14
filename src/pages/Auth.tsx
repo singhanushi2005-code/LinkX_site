@@ -76,6 +76,13 @@ const Auth = () => {
       return;
     }
 
+    // Validate .edu email domain
+    if (!email.toLowerCase().endsWith('.edu')) {
+      toast.error("Please use a valid .edu email address");
+      setIsLoading(false);
+      return;
+    }
+
     try {
       const { error } = await supabase.auth.signUp({
         email,
